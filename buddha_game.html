@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>윤회의 길</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "맑은 고딕", serif;
+
+  /* 🌄 사찰 느낌 배경 */
+  background-image: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  color: #f5f1e6;
+  text-align: center;
+}
+
+/* 🧘 메인 공간 */
+#container {
+  width: 520px;
+  margin: 100px auto;
+  padding: 50px 40px;
+
+  background: rgba(20,20,20,0.7);
+  backdrop-filter: blur(8px);
+
+  border-radius: 10px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.9);
+
+  position: relative;
+}
+
+/* ✨ 위쪽 빛 효과 */
+#container::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 260px;
+
+  background: radial-gradient(circle, rgba(212,175,55,0.25), transparent);
+  filter: blur(50px);
+
+  z-index: -1;
+}
+
+/* ☸ 제목 */
+h1 {
+  font-weight: normal;
+  letter-spacing: 6px;
+  color: #d4af37;
+  margin-bottom: 20px;
+}
+
+/* 불교 아이콘 */
+.symbol {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+/* 본문 */
+#story {
+  font-size: 17px;
+  line-height: 2.2;
+  margin: 50px 0;
+  white-space: pre-line;
+}
+
+/* 버튼 */
+button {
+  display: block;
+  width: 75%;
+  margin: 10px auto;
+  padding: 14px;
+
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+
+  color: #ddd;
+  font-size: 15px;
+
+  border-radius: 5px;
+  cursor: pointer;
+
+  transition: all 0.4s;
+}
+
+button:hover {
+  border-color: #d4af37;
+  color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+
+/* 결과 강조 */
+.result {
+  font-size: 24px;
+  color: #d4af37;
+}
+
+/* 등장 효과 */
+.fade-in {
+  animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="container">
+
+<div class="symbol">☸ 🧘 ☸</div>
+<h1>윤회의 길</h1>
+
+<p id="story"></p>
+
+<button id="btn1">시작하기</button>
+<button id="btn2" style="display:none;"></button>
+
+</div>
+
+<script>
+let step = -1;
+let karma = 0;
+
+const story = document.getElementById("story");
+const btn1 = document.getElementById("btn1");
+const btn2 = document.getElementById("btn2");
+
+/* 타이핑 효과 */
+function typeText(text){
+  story.classList.remove("fade-in");
+  void story.offsetWidth;
+  story.classList.add("fade-in");
+
+  let i = 0;
+  story.innerHTML = "";
+  let interval = setInterval(()=>{
+    story.innerHTML += text[i];
+    i++;
+    if(i >= text.length) clearInterval(interval);
+  }, 18);
+}
+
+/* 질문 (최종 버전 유지) */
+const questions = [
+
+{
+q: "시험을 보고 있는 상황이다.\n아무도 모르는 방법으로 점수를 올릴 수 있다.\n\n이 선택을 마주했을 때 마음은 어디로 기울어지는가?",
+a: ["정직하게 본다", "조금쯤은 괜찮다고 생각한다"]
+},
+
+{
+q: "길에서 곤란해 보이는 사람을 만났다.\n도울 수는 있지만, 내 일정이 밀릴 수도 있다.\n\n이 상황에서 어떤 선택을 하는가?",
+a: ["잠시 시간을 내어 돕는다", "어쩔 수 없다고 생각하고 지나간다"]
+},
+
+{
+q: "친구가 잘못된 선택을 하고 있다.\n말해주면 관계가 어색해질 수도 있다.\n\n지금 당신에게 더 크게 다가오는 것은 무엇인가?",
+a: ["불편하더라도 솔직하게 말한다", "괜히 상황을 만들고 싶지 않아 넘어간다"]
+},
+
+{
+q: "어떤 일에 실패했다.\n계속 떠오르고 마음이 놓이지 않는다.\n\n이 감정을 어떻게 대하는가?",
+a: ["그대로 인정하고 내려놓으려 한다", "계속 생각하며 붙잡고 있게 된다"]
+},
+
+{
+q: "누군가의 말이 마음을 건드렸다.\n화가 올라오는 걸 느낀다.\n\n이 감정을 마주했을 때 어떻게 행동하는가?",
+a: ["잠시 멈추고 스스로를 바라본다", "그 감정을 그대로 드러낸다"]
+},
+
+{
+q: "더 많은 것을 가질 기회가 눈앞에 있다.\n지금도 충분하지만 더 욕심이 난다.\n\n이때 어떤 선택을 하는가?",
+a: ["지금으로도 충분하다고 생각한다", "조금 더 가지려고 한다"]
+},
+
+{
+q: "문득 ‘나는 어떤 사람인가’라는 생각이 든다.\n그 질문이 계속 머릿속에 맴돈다.\n\n이 생각을 어떻게 대하는가?",
+a: ["그 생각조차 지나가도록 둔다", "스스로를 계속 정의하려 한다"]
+}
+
+];
+
+function showQuestion(){
+  let q = questions[step];
+  typeText(q.q);
+
+  btn1.innerText = q.a[0];
+  btn2.innerText = q.a[1];
+  btn2.style.display = "block";
+}
+
+/* 시작 화면 */
+typeText("잠시 멈춰 서서 숨을 고릅니다.\n\n당신의 선택은 어떤 흐름을 만들어왔을까요?");
+
+/* 버튼 */
+btn1.onclick = () => {
+  if(step === -1){
+    step = 0;
+    showQuestion();
+    return;
+  }
+  handleChoice(1);
+};
+
+btn2.onclick = () => handleChoice(2);
+
+function handleChoice(choice){
+  if(choice === 1) karma++;
+  else karma--;
+
+  step++;
+
+  if(step < questions.length){
+    showQuestion();
+  } else {
+    ending();
+  }
+}
+
+/* 결과 */
+function ending(){
+
+  let result, msg;
+
+  if(karma >= 4){
+    result = "해탈";
+    msg = "당신은 상황보다 마음을 더 깊이 바라보았습니다.\n\n집착을 내려놓으려는 태도 속에서,\n자유에 가까워진 모습이 보입니다.";
+  }
+  else if(karma >= 1){
+    result = "인간";
+    msg = "여러 상황 속에서 고민하며 선택했습니다.\n\n그 과정 속에서 스스로를 이해하고 있습니다.";
+  }
+  else if(karma >= -2){
+    result = "동물";
+    msg = "상황에 따라 자연스럽게 반응하는 모습이 많았습니다.\n\n그러나 알아차림은 지금부터 시작될 수 있습니다.";
+  }
+  else{
+    result = "고통";
+    msg = "마음이 흔들릴 때마다 선택도 흔들렸습니다.\n\n하지만 그 사실을 아는 순간 변화는 시작됩니다.";
+  }
+
+  typeText("[" + result + "]\n\n" + msg);
+
+  btn1.style.display = "none";
+  btn2.style.display = "none";
+}
+</script>
+
+</body>
+</html>
